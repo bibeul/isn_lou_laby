@@ -53,6 +53,3 @@ class PageOne(tk.Frame):
         self.hst["state"] = 'normal'
         self.btn["state"] = DISABLED
         self.update_clock()
-
-
-#salut nathan
