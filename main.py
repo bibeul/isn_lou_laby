@@ -1,18 +1,19 @@
 import tkinter as tk
 from tkinter import font  as tkfont
+from pages import PageOne, PageTwo, StartPage, PageQuest
 
 list_question = {}
-
-list_question["dérivé expo" """=A(M)"""] = {
-    1: "e^3",
-    2: "e^2",
-    3: "e^4",
-}
 
 list_question["equations" """=B(M)"""] = {
     1: "8x^2+3x-8=68/-68",
     2: "5x^2-4x+8=pas de solutions",
     3: "2x^2-7x+9=0",
+}
+
+list_question["dérivé expo" """=A(M)"""] = {
+    1: "e^3",
+    2: "e^2",
+    3: "e^4",
 }
 
 list_question["integrales" """=C(M)"""] = {
@@ -34,31 +35,31 @@ list_question["Palindrome" """=E(M)"""] = {
 }
 
 list_question["maths"] = {
-    "equations": {
+    1: {
         "rep1": "8x^2+3x-8=68/-68",
         "rep2": "5x^2-4x+8=pas de solutions",
         "rep3": "2x^2-7x+9=0",
         "good": "rep3"
     },
-    "A": {
+    2: {
         "rep1": "non",
-        "rep2": "non",
-        "rep3": "oui",
+        "rep2": "oui",
+        "rep3": "non",
         "good": "rep2"
     },
-    "C": {
+    3: {
         "rep1": "oui",
         "rep2": "non",
         "rep3": "non ",
         "good": "rep1"
     },
-    "D": {
+    4: {
         "rep1": "non",
         "rep2": "non",
         "rep3": "oui ",
         "good": "rep3"
     },
-    "E": {
+    5: {
         "rep1": "oui",
         "rep2": "non",
         "rep3": "non ",
@@ -150,6 +151,9 @@ class SampleApp(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
+        self.question_type = "math"
+        self.cpt = {"maths": 0, "physique": 0, "histoire": 0}
+
 
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
@@ -162,7 +166,7 @@ class SampleApp(tk.Tk):
 
         """self = objet= instance d'une classe"""
         self.frames = {}
-        for F in (StartPage, PageOne, PageTwo):
+        for F in (StartPage, PageOne, PageTwo, PageQuest):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -177,12 +181,13 @@ class SampleApp(tk.Tk):
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
+        print(self.question_type)
+        frame.update()
         frame.tkraise()
 
 
 
-
 if __name__ == "__main__":
-"""mane loop pour commencer le programme"""
+    """mane loop pour commencer le programme"""
     app = SampleApp()
     app.mainloop()
