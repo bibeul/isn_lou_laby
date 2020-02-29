@@ -183,5 +183,6 @@ class SampleApp(tk.Tk):
 
 
 if __name__ == "__main__":
+"""mane loop pour commencer le programme"""
     app = SampleApp()
     app.mainloop()
