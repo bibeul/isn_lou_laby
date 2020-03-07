@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import font  as tkfont
-from pages import PageOne, PageTwo, StartPage, PageQuest
+from pages import PageOne, PageTwo, StartPage, PageQuest, PageVictory, PageDefeat
 
 list_question = {}
 
@@ -23,7 +23,7 @@ class SampleApp(tk.Tk):
         """self = objet= instance d'une classe"""
         self.frames = {}
         """initialisation d'une boucle pour mettre toutes les pages au meme endroit"""
-        for F in (StartPage, PageOne, PageTwo, PageQuest):
+        for F in (StartPage, PageOne, PageTwo, PageQuest, PageVictory, PageDefeat):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame

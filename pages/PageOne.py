@@ -11,6 +11,7 @@ class PageOne(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.lbl = Label(self, text="Hello")
+        self.max = 0
         self.lbl.grid(column=0, row=0)
         """intiation des boutons pour les categories de questions"""
         self.btn = Button(self, text="Start Game !", command=self.startGame)
@@ -59,3 +60,17 @@ class PageOne(tk.Frame):
         self.hst["state"] = 'normal'
         self.btn["state"] = DISABLED
         self.update_clock()
+
+    def update(self):
+        cpt = self.controller.cpt
+        print("cpt :", cpt)
+        self.max = max(cpt.values())
+        if self.max != 0:
+            if cpt["physique"] == cpt["maths"] and cpt["histoire"] == cpt["maths"]:
+                self.physique["state"] = 'normal'
+                self.math["state"] = 'normal'
+                self.hst["state"] = 'normal'
+            else:
+                if cpt["physique"] == self.max: self.physique["state"] = DISABLED
+                if cpt["maths"] == self.max: self.math["state"] = DISABLED
+                if cpt["histoire"] == self.max: self.hst["state"] = DISABLED

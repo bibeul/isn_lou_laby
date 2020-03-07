@@ -11,9 +11,9 @@ class PageQuest(tk.Frame):
         self.question_text.pack()
 
         """création des 3 boutons pour répondre aux questions et la montrer sur la page"""
-        self.bouton_rep1 = tk.Button(self, text="!")
-        self.bouton_rep2 = tk.Button(self, text="!")
-        self.bouton_rep3 = tk.Button(self, text="!")
+        self.bouton_rep1 = tk.Button(self, text="!", command=lambda: self.correcteur("rep1"))
+        self.bouton_rep2 = tk.Button(self, text="!", command=lambda: self.correcteur("rep2"))
+        self.bouton_rep3 = tk.Button(self, text="!", command=lambda: self.correcteur("rep3"))
 
         self.bouton_rep1.pack()
         self.bouton_rep2.pack()
@@ -92,12 +92,24 @@ class PageQuest(tk.Frame):
                 "good": "rep3"
             },
             2: {
-                "rep1": "3.0x10^8 m/s",
+                "rep1": "4.0x10^8 m/s",
                 "rep2": "3.171002504x10^-16 a.l",
-                "rep3": "300000000 m/s",
-                "good": "rep1, rep2, rep3"
+                "rep3": "300000001 m/s",
+                "good": "rep2"
             },
         }
+    """creation de la fonction qui controle la correction d'une reponse"""
+
+    def correcteur(self, number_button):
+        typo = self.controller.question_type
+        selected_question = self.list_question[typo][self.controller.cpt[typo]]
+        goodrep = selected_question["good"]
+        print("goodrep:", number_button == goodrep)
+        self.controller.cpt[typo] = (self.controller.cpt[typo] + 1) % len(self.list_question[typo])
+        if number_button == goodrep:
+            self.controller.show_frame("PageVictory")
+        else:
+            self.controller.show_frame("PageDefeat")
 
     """creation de la fonction qui controle le raffraichissement des questions d'une categorie"""
     def update(self):
@@ -105,5 +117,4 @@ class PageQuest(tk.Frame):
         self.bouton_rep1.configure(text= self.list_question[type][self.controller.cpt[type]]["rep1"])
         self.bouton_rep2.configure(text= self.list_question[type][self.controller.cpt[type]]["rep2"])
         self.bouton_rep3.configure(text= self.list_question[type][self.controller.cpt[type]]["rep3"])
-        self.controller.cpt[type] = (self.controller.cpt[type] + 1) % len(self.list_question[type])
         print(self.controller.cpt)
