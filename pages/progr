@@ -1,0 +1,299 @@
+import tkinter as tk
+from tkinter import font  as tkfont
+
+list_question = {}
+
+class SampleApp(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        """constructeur de la classe: fonction appelé à l'initialisation d'un objet de cette classe"""
+        tk.Tk.__init__(self, *args, **kwargs)
+
+        self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
+        self.question_type = "maths"
+        self.cpt = {"maths": 0, "physique": 0, "histoire": 0}
+
+        # le container est l'endroit ou sont stockée toutes les pages 
+        # chaque page est ecrasée par une autre
+        """assigne nvl frame au container et le met en forme"""
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+
+        """self = objet= instance d'une classe"""
+        self.frames = {}
+        for F in (StartPage, PageOne, PageTwo, PageQuest):
+            page_name = F.__name__
+            frame = F(parent=container, controller=self)
+            self.frames[page_name] = frame
+
+            # mettre toutes les pages au meme endroit
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame("StartPage")
+
+    def show_frame(self, page_name):
+        '''montrer la page pourlui donner un nom'''
+        frame = self.frames[page_name]
+        print(self.question_type)
+        frame.config(background='#FF775A')
+        
+        frame.update()
+        frame.tkraise()
+import tkinter as tk
+
+
+class StartPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is the start page", font=(controller.title_font, 30),bg='#FF775A',foreground='white')
+        label.pack(side="top", fill="x", pady=10, expand=YES)
+        cadre = Frame(self)
+        cadre.pack(expand=NO)
+        button1 = tk.Button(cadre, text="Lancer le jeu",font=('Arrial',20),bg='#FF775A', command=lambda: controller.show_frame("PageOne"))
+        button2 = tk.Button(self, text="Règles du jeu",font=('Arrial',10),bg='#FF775A', command=lambda: controller.show_frame("PageTwo"))
+        button1.config( height = 3, width = 10,relief=FLAT)
+        button2.config( height = 1, width = 10,relief=FLAT)
+        button1.pack(pady=10)
+        button2.pack(pady=60)
+
+from tkinter import *
+from datetime import timedelta
+import tkinter as tk
+
+
+class PageOne(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.lbl = Label(self, text="Hello")
+        self.lbl.grid(column=0, row=0)
+
+        self.btn = Button(self, text="Start Game !", command=self.startGame)
+        self.hst = Button(self, text="histoire", state=DISABLED, command=lambda: self.change_to_history_question(controller))
+        self.physique = Button(self, text="physique", state=DISABLED, command=lambda: self.change_to_physic_question(controller))
+        self.math = Button(self, text="maths", state=DISABLED, command=lambda: self.change_to_maths_question(controller))
+
+        self.math.grid(column=2, row=3)
+        self.hst.grid(column=2, row=2)
+        self.physique.grid(column=2, row=1)
+        self.btn.grid(column=2, row=0)
+
+        button = tk.Button(self, text="retour", command=lambda: controller.show_frame("StartPage"))
+        button.grid()
+
+    def change_to_history_question(self, controller):
+        controller.question_type = "histoire"
+        controller.show_frame("PageQuest")
+
+    def change_to_maths_question(self, controller):
+        controller.question_type = "maths"
+        controller.show_frame("PageQuest")
+
+    def change_to_physic_question(self, controller):
+        controller.question_type = "physique"
+        controller.show_frame("PageQuest")
+
+
+    def update_clock(self, n=0):
+        now = timedelta(seconds=100) - timedelta(seconds=n)
+        if now <= timedelta(minutes=0):
+            self.lbl.configure(text="Perdu")
+            return
+
+        self.lbl.configure(text=now)
+        self.after(1000, lambda: self.update_clock(n + 1))
+
+    def startGame(self):
+        self.lbl.configure(text="Game start !!")
+        self.physique["state"] = 'normal'
+        self.math["state"] = 'normal'
+        self.hst["state"] = 'normal'
+        self.btn["state"] = DISABLED
+        self.update_clock()
+
+import tkinter as tk
+
+
+class PageTwo(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="Regles du jeu", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="retour", command=lambda: controller.show_frame("StartPage"))
+        button.pack()
+        txtrdj = tk.Label(self, text=("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. "
+                                      "Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, "
+                                      "dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, "
+                                      "semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, "
+                                      "enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis "
+                                      "arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque "
+                                      "congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum "
+                                      "augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. "
+                                      "Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in "
+                                      "faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris "
+                                      "ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam "
+                                      "sodales hendrerit.Ut velit mauris, egestas sed, gravida nec, ornare ut, "
+                                      "mi. Aenean ut orci vel massa suscipit pulvinar. Nulla sollicitudin. Fusce "
+                                      "varius, ligula non tempus aliquam, nunc turpis ullamcorper nibh, "
+                                      "in tempus sapien eros vitae ligula. Pellentesque rhoncus nunc et augue. "
+                                      "Integer id felis. Curabitur aliquet pellentesque diam. Integer quis metus "
+                                      "vitae elit lobortis egestas. Lorem ipsum dolor sit amet, consectetuer "
+                                      "adipiscing elit. Morbi vel erat non mauris convallis vehicula. Nulla et "
+                                      "sapien. Integer tortor tellus, aliquam faucibus, convallis id, congue eu, "
+                                      "quam. Mauris ullamcorper felis vitae erat. Proin feugiat, augue non elementum "
+                                      "posuere, metus purus iaculis lectus, et tristique ligula justo vitae "
+                                      "magna.Aliquam convallis sollicitudin purus. Praesent aliquam, "
+                                      "enim at fermentum mollis, ligula massa adipiscing nisl, ac euismod nibh nisl "
+                                      "eu lectus. Fusce vulputate sem at sapien. Vivamus leo. Aliquam euismod libero "
+                                      "eu enim. Nulla nec felis sed leo placerat imperdiet. Aenean suscipit nulla in "
+                                      "justo. Suspendisse cursus rutrum augue. Nulla tincidunt tincidunt mi. "
+                                      "Curabitur iaculis, lorem vel rhoncus faucibus, felis magna fermentum augue, "
+                                      "et ultricies lacus lorem varius purus. Curabitur eu amet.Lorem ipsum dolor sit "
+                                      "amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, "
+                                      "dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum "
+                                      "ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, "
+                                      "mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, "
+                                      "non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, "
+                                      "scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in "
+                                      "risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. "
+                                      "Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed "
+                                      "dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci "
+                                      "luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed "
+                                      "pede pellentesque fermentum. Maecenas adipiscing ante non diam sodales "
+                                      "hendrerit.Ut velit mauris, egestas sed, gravida nec, ornare ut, mi. Aenean ut "
+                                      "orci vel massa suscipit pulvinar. Nulla sollicitudin. Fusce varius, "
+                                      "ligula non tempus aliquam, nunc turpis ullamcorper nibh, in tempus sapien eros "
+                                      "vitae ligula. Pellentesque rhoncus nunc et augue. Integer id felis. Curabitur "
+                                      "aliquet pellentesque diam. Integer quis metus vitae elit lobortis egestas. "
+                                      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi vel erat non "
+                                      "mauris convallis vehicula. Nulla et sapien. Integer tortor tellus, "
+                                      "aliquam faucibus, convallis id, congue eu, quam. Mauris ullamcorper felis "
+                                      "vitae erat. Proin feugiat, augue non elementum posuere, metus purus iaculis "
+                                      "lectus, et tristique ligula justo vitae magna.Aliquam convallis sollicitudin "
+                                      "purus. Praesent aliquam, enim at fermentum mollis, ligula massa adipiscing "
+                                      "nisl, ac euismod nibh nisl eu lectus. Fusce vulputate sem at sapien. Vivamus "
+                                      "leo. Aliquam euismod libero eu enim. Nulla nec felis sed leo placerat "
+                                      "imperdiet. Aenean suscipit nulla in justo. Suspendisse cursus rutrum augue. "
+                                      "Nulla tincidunt tincidunt mi. Curabitur iaculis, lorem vel rhoncus faucibus, "
+                                      "felis magna fermentum augue, et ultricies lacus lorem varius purus. Curabitur "
+                                      "eu amet."), wraplength=1000)
+        txtrdj.pack(side="top", fill="x", pady=10)
+
+
+
+import tkinter as tk
+
+
+class PageQuest(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        self.question_text = tk.Label(self, text="coche la bonne reponse")
+        self.question_text.pack()
+
+        self.bouton_rep1 = tk.Button(self, text="!")
+        self.bouton_rep2 = tk.Button(self, text="!")
+        self.bouton_rep3 = tk.Button(self, text="!")
+
+        self.bouton_rep1.pack()
+        self.bouton_rep2.pack()
+        self.bouton_rep3.pack()
+
+        button = tk.Button(self, text="retour",command=lambda: controller.show_frame("PageOne"))
+        button.pack()
+
+        self.list_question = {}
+        self.list_question["maths"] = {
+            0: {
+                "rep1": "8x^2+3x-8=68/-68",
+                "rep2": "5x^2-4x+8=pas de solutions",
+                "rep3": "2x^2-7x+9=0",
+                "good": "rep3"
+            },
+            1: {
+                "rep1": "e^3",
+                "rep2": "e^2",
+                "rep3": "e^4",
+                "good": "rep2"
+            },
+            2: {
+                "rep1": "e^x^2=1.462",
+                "rep2": "e^x^3=1.359",
+                "rep3": "e^x^4=1.496",
+                "good": "rep1"
+            },
+            3: {
+                "rep1": "le nombre pi n'est pas transcendant",
+                "rep2": "stochastique est la mesure et analyse harmonique",
+                "rep3":  "l'équation Navier-Stoke=comprendre les courants marins",
+                "good": "rep3"
+            },
+            4: {
+                "rep1": "17371 est un nombre palindrome",
+                "rep2": "96568 est un nombre palindrome",
+                "rep3": "un palindrome= nombre à 4 chiffres",
+                "good": "rep1"
+            }
+        }
+
+        self.list_question["histoire"] = {
+            0: {
+                "rep1": "1965= transfert des cendres de Jean Moulin",
+                "rep2": "1957=traité de Rome",
+                "rep3": "1959= 5eme republique",
+                "good": "rep2"
+            },
+            1: {
+                "rep1": "1920=R.Poincaré",
+                "rep2": "1945=C.de Gaulle",
+                "rep3": "1981=F.Mitterant",
+                "good": "rep3"
+            },
+            3: {
+                "rep1": "Née un 13 juillet",
+                "rep2": "Amie avec F.Hollande",
+                "rep3": "Déportée à Dachau",
+                "good": "rep1"
+            }
+        }
+
+        self.list_question["physique"] = {
+            0: {
+                "rep1": "nous ne sommes pas seuls dans l'espace",
+                "rep2": "il y a une seule dimension dans l'univers",
+                "rep3": "il y a des extraterestres sur mars",
+                "good": "rep2"
+            },
+            1: {
+                "rep1": "un atome d'azote possède 3 liaisons",
+                "rep2": "un atome d'hydrogène possède 2 liaisons",
+                "rep3": "un atome de crabone possède 4 liaisons",
+                "good": "rep3"
+            },
+            2: {
+                "rep1": "3.0x10^8 m/s",
+                "rep2": "3.171002504x10^-16 a.l",
+                "rep3": "300000000 m/s",
+                "good": "rep1, rep2, rep3"
+            },
+        }
+
+#    def correction(self):
+
+    def update(self):
+        type = self.controller.question_type
+        self.bouton_rep1.configure(text= self.list_question[type][self.controller.cpt[type]]["rep1"])
+        self.bouton_rep2.configure(text= self.list_question[type][self.controller.cpt[type]]["rep2"])
+        self.bouton_rep3.configure(text= self.list_question[type][self.controller.cpt[type]]["rep3"])
+        self.controller.cpt[type] = (self.controller.cpt[type] + 1) % len(self.list_question[type])
+        print(self.controller.cpt)
+
+
+if __name__ == "__main__":
+    """mane loop pour commencer le programme"""
+    app = SampleApp()
+    app.mainloop()
